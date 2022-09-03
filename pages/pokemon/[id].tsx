@@ -7,21 +7,32 @@ import { Layout } from "../../components/layouts";
 import { Pokemon } from "../../interfaces";
 import { localFavorites } from "../../utils";
 
+import confetti from "canvas-confetti";
+
 interface Props {
   pokemon: Pokemon;
 }
 
 const PokemonPage: NextPage<Props> = ({ pokemon }) => {
-  console.log("pokemon", pokemon);
-
   const [isInFavorites, setIsInFavorites] = useState(
     localFavorites.existInFavorites(pokemon.id)
   );
 
   const onToogleFavorite = () => {
-    console.log("ID:" + pokemon.id);
     localFavorites.toogleFavorite(pokemon.id);
     setIsInFavorites(!isInFavorites);
+
+    if (isInFavorites) return;
+    confetti({
+      particleCount: 100,
+      spread: 160,
+      angle: -100,
+      zIndex: 999,
+      origin: {
+        x: 1,
+        y: 0.5,
+      },
+    });
   };
 
   return (
@@ -95,8 +106,6 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
   const pokemons151 = [...Array(151)].map((value, index) => `${index + 1}`);
-
-  console.log("pokemons151", pokemons151);
 
   return {
     // paths: [
